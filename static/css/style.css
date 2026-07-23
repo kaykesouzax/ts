@@ -1,0 +1,644 @@
+:root {
+  --cor1: #111111;
+  --cor2: #222222;
+  --cor3: #333333;
+  --cor4: #444444;
+  --cor5: #555555;
+  --texto: #e8e8e8;
+  --textoFraco: #a8a8a8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--cor1);
+  color: var(--texto);
+  min-height: 100vh;
+}
+
+.barraTopo {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: var(--cor2);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.botaoMenu {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+}
+
+.botaoMenu span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--texto);
+}
+
+.menuLateral {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 260px;
+  background: var(--cor2);
+  transform: translateX(-100%);
+  transition: transform 0.2s ease;
+  z-index: 30;
+  padding: 70px 0 20px 0;
+  overflow-y: auto;
+}
+
+.menuLateral.aberto {
+  transform: translateX(0);
+}
+
+.sobreposicao {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 25;
+}
+
+.sobreposicao.visivel {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.grupoMenu {
+  margin-bottom: 18px;
+}
+
+.tituloGrupo {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--textoFraco);
+  padding: 0 20px;
+  margin: 0 0 8px 0;
+}
+
+.itemMenu {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--texto);
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.itemMenu:hover {
+  background: var(--cor3);
+}
+
+.itemAtivo {
+  background: var(--cor4);
+}
+
+.conteudo {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.conteudo.largo {
+  max-width: 1000px;
+}
+
+.aba.oculto {
+  display: none;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.descricao {
+  color: var(--textoFraco);
+  margin: 0 0 32px 0;
+}
+
+.areaEnvio {
+  background: var(--cor2);
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.botaoPrincipal {
+  background: var(--cor5);
+  color: var(--texto);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.botaoPrincipal:hover {
+  background: var(--cor4);
+}
+
+.botaoSecundario {
+  background: transparent;
+  color: var(--textoFraco);
+  border: 1px solid var(--cor4);
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.botaoSecundario:hover {
+  color: var(--texto);
+  border-color: var(--cor5);
+}
+
+.nomeArquivo {
+  margin-top: 14px;
+  color: var(--textoFraco);
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.areaProcessando {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--textoFraco);
+}
+
+.areaResultado {
+  background: var(--cor2);
+  border-radius: 8px;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.linhaResultado {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tamanhoFinal {
+  margin-top: 16px;
+  color: var(--textoFraco);
+  font-size: 13px;
+}
+
+.alertaMetodo {
+  font-size: 13px;
+  color: var(--textoFraco);
+  background: var(--cor3);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+}
+
+.areaErro {
+  margin-top: 20px;
+  color: #d98686;
+  font-size: 14px;
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* Juntar Arquivos */
+.juntarOrganizar {
+  margin-top: 8px;
+}
+
+.instrucaoOrdem {
+  text-align: center;
+  color: var(--textoFraco);
+  font-size: 14px;
+  margin: 0 0 24px 0;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.cartao {
+  background: var(--cor2);
+  border-radius: 8px;
+  padding: 8px;
+  position: relative;
+  cursor: grab;
+  border: 1px solid transparent;
+}
+
+.cartao.arrastando {
+  opacity: 0.4;
+}
+
+.cartao.alvoArraste {
+  border-color: var(--cor5);
+}
+
+.cartaoTopo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 22px;
+  margin-bottom: 5px;
+}
+
+.cartaoAcao {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  color: var(--textoFraco);
+}
+
+.cartaoAcao:hover {
+  color: var(--texto);
+}
+
+.cartaoAcao svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.cartaoMiniatura {
+  width: 100%;
+  height: 130px;
+  background: #ffffff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cartaoMiniatura canvas,
+.cartaoMiniatura img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.cartaoNome {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--textoFraco);
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.linhaAcoes {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+/* Visualizador */
+.visualizador {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.visualizadorBarra {
+  background: var(--cor3);
+  border-radius: 8px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.vizBotao {
+  background: transparent;
+  border: none;
+  color: var(--texto);
+  font-size: 18px;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vizBotao:hover {
+  background: var(--cor4);
+}
+
+.vizPagina {
+  color: var(--texto);
+  font-size: 14px;
+  min-width: 54px;
+  text-align: center;
+}
+
+.vizConteudo {
+  background: var(--cor2);
+  border-radius: 8px;
+  width: min(820px, 92vw);
+  height: min(82vh, 1000px);
+  overflow: auto;
+  padding: 16px;
+  text-align: center;
+}
+
+.vizConteudo canvas,
+.vizConteudo img {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  /* inline-block + text-align:center no pai centraliza quando cabe,
+     e permite rolar ate as duas bordas quando maior que a area */
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* Campo de nome do arquivo (aba Juntar) */
+.campoNome {
+  margin-bottom: 20px;
+}
+
+.rotuloNome {
+  display: block;
+  font-size: 13px;
+  color: var(--textoFraco);
+  margin-bottom: 8px;
+}
+
+.entradaNomeLinha {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.entradaNome {
+  background: var(--cor1);
+  border: 1px solid var(--cor4);
+  color: var(--texto);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  width: min(320px, 70%);
+  text-align: center;
+}
+
+.entradaNome:focus {
+  outline: none;
+  border-color: var(--cor5);
+}
+
+.sufixoNome {
+  color: var(--textoFraco);
+  font-size: 14px;
+}
+
+/* Chave de modo (aba Converter Foto para PDF) */
+.seletorModo {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 10px;
+}
+
+.opcaoModo {
+  background: var(--cor2);
+  border: 1px solid var(--cor4);
+  color: var(--textoFraco);
+  padding: 10px 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.opcaoModo:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.opcaoModo:last-child {
+  border-radius: 0 6px 6px 0;
+  border-left: none;
+}
+
+.opcaoModo:hover {
+  color: var(--texto);
+}
+
+.opcaoAtiva {
+  background: var(--cor4);
+  color: var(--texto);
+}
+
+.modoInfo {
+  text-align: center;
+  color: var(--textoFraco);
+  font-size: 13px;
+  margin: 0 0 28px 0;
+}
+
+.botaoPrincipal:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.botaoPrincipal:disabled:hover {
+  background: var(--cor5);
+}
+
+/* Aba CDC */
+.campoCdc {
+  background: var(--cor2);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.cabecalhoCampo {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--texto);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+}
+
+.cabecalhoCampo:hover {
+  background: var(--cor3);
+}
+
+.setaCampo {
+  color: var(--textoFraco);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+  display: inline-block;
+}
+
+.campoAberto .setaCampo {
+  transform: rotate(90deg);
+}
+
+.tituloCampo {
+  flex: 1;
+}
+
+.marcaObrigatorio {
+  color: var(--textoFraco);
+  margin-left: 4px;
+}
+
+.contadorCampo {
+  color: var(--textoFraco);
+  font-size: 12px;
+}
+
+.contadorPreenchido {
+  color: var(--texto);
+}
+
+.corpoCampo {
+  padding: 4px 16px 18px 16px;
+}
+
+.gradeCampo:empty {
+  display: none;
+}
+
+.gradeCampo {
+  margin-bottom: 14px;
+}
+
+.avisoPaginas {
+  font-size: 13px;
+  color: var(--textoFraco);
+  background: var(--cor3);
+  border-radius: 6px;
+  padding: 9px 12px;
+  margin: 0 0 14px 0;
+}
+
+.textoConfirmacao {
+  font-size: 15px;
+  margin: 0 0 10px 0;
+}
+
+.listaFaltantes {
+  color: var(--textoFraco);
+  font-size: 13px;
+  margin: 0 0 22px 0;
+}
+
+/* Area clicavel: qualquer ponto vazio abre a escolha de arquivos */
+.areaClicavel {
+  cursor: pointer;
+}
+
+.areaClicavel .cartao {
+  cursor: grab;
+}
+
+/* garante area minima de clique quando a gaveta esta vazia */
+.corpoCampo.areaClicavel {
+  min-height: 64px;
+}
+
+/* Aba Placas */
+.clienteLido {
+  margin: 24px 0;
+  padding: 12px 16px;
+  background: var(--cor2);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--texto);
+  word-break: break-word;
+}
+
+.listaClientesArea {
+  margin-top: 34px;
+  border-top: 1px solid var(--cor3);
+  padding-top: 24px;
+}
+
+.tituloLista {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--textoFraco);
+  margin: 0 0 14px 0;
+}
+
+.listaClientes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.linhaCliente {
+  background: var(--cor2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nomeCliente {
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.botaoRemoverCliente {
+  padding: 6px 14px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.campoPlaca {
+  margin-bottom: 10px;
+}
