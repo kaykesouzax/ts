@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manipulacao de Documentos</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="barraTopo">
+  <button id="botaoMenu" class="botaoMenu" aria-label="Abrir menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<nav id="menuLateral" class="menuLateral">
+  {% for grupo in menu %}
+  <div class="grupoMenu">
+    <p class="tituloGrupo">{{ grupo.titulo }}</p>
+    {% for item in grupo.itens %}
+    <button class="itemMenu {% if item.id == aba_inicial %}itemAtivo{% endif %}"
+            data-aba="{{ item.id }}" {% if not item.ativo %}data-indisponivel="1"{% endif %}>
+      {{ item.nome }}
+    </button>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</nav>
+
+<div id="sobreposicao" class="sobreposicao"></div>
+
+<main class="conteudo">
+
+  <section class="aba" id="aba_comprimir">
+    <h1>Comprimir Arquivos</h1>
+    <p class="descricao">Envie um PDF para reduzir o tamanho do arquivo.</p>
+
+    <div class="seletorModo">
+      <button id="modoBasica" class="opcaoModo opcaoAtiva" data-modo="basica">Compressao Basica</button>
+      <button id="modoAlienacao" class="opcaoModo" data-modo="alienacao">Compressao Alienacao</button>
+    </div>
+    <p id="compModoInfo" class="modoInfo">Reducao equilibrada, sem meta de tamanho.</p>
+
+    <div id="areaEnvio" class="areaEnvio">
+      <input type="file" id="entradaArquivo" accept="application/pdf" hidden>
+      <button id="botaoEscolher" class="botaoPrincipal">Escolher arquivo</button>
+      <p id="nomeArquivo" class="nomeArquivo"></p>
+    </div>
+
+    <div id="areaProcessando" class="areaProcessando oculto">
+      <p>Processando o arquivo</p>
+    </div>
+
+    <div id="areaResultado" class="areaResultado oculto">
+      <p id="alertaMetodo" class="alertaMetodo oculto">
+        Foi necessario aplicar uma compressao mais forte para atingir o tamanho alvo.
+      </p>
+      <p id="alertaMetaNao" class="alertaMetodo oculto">
+        Nao foi possivel atingir o tamanho alvo. Este e o menor tamanho possivel mantendo a legibilidade.
+      </p>
+      <div class="linhaResultado">
+        <button id="botaoBaixar" class="botaoPrincipal">Baixar arquivo</button>
+        <button id="botaoReiniciar" class="botaoSecundario">Reiniciar</button>
+      </div>
+      <p id="tamanhoFinal" class="tamanhoFinal"></p>
+    </div>
+
+    <div id="areaErro" class="areaErro oculto"></div>
+  </section>
+
+  <section class="aba oculto" id="aba_comprimir_imagem">
+    <h1>Comprimir Imagens</h1>
+    <p class="descricao">Envie uma imagem para reduzir o tamanho do arquivo.</p>
+
+    <div class="seletorModo">
+      <button id="ciModoSimples" class="opcaoModo opcaoAtiva" data-modo="simples">Compressao Simples</button>
+      <button id="ciModoAvancada" class="opcaoModo" data-modo="avancada">Compressao Avancada</button>
+    </div>
+    <p id="ciModoInfo" class="modoInfo">Mantem o tamanho original da imagem.</p>
+
+    <div id="ciEnvio" class="areaEnvio">
+      <input type="file" id="ciEntrada" accept="image/*" hidden>
+      <button id="ciEscolher" class="botaoPrincipal">Escolher imagem</button>
+      <p id="ciNome" class="nomeArquivo"></p>
+    </div>
+
+    <div id="ciProcessando" class="areaProcessando oculto">
+      <p>Comprimindo a imagem</p>
+    </div>
+
+    <div id="ciResultado" class="areaResultado oculto">
+      <p id="ciAvisoSemGanho" class="alertaMetodo oculto">
+        Esta imagem ja estava otimizada. O arquivo foi mantido como estava.
+      </p>
+      <div class="campoNome">
+        <label for="ciNomeArquivo" class="rotuloNome">Nome do arquivo</label>
+        <div class="entradaNomeLinha">
+          <input type="text" id="ciNomeArquivo" class="entradaNome" value="Imagem Comprimida" spellcheck="false">
+          <span id="ciSufixo" class="sufixoNome">.jpg</span>
+        </div>
+      </div>
+      <div class="linhaResultado">
+        <button id="ciBaixar" class="botaoPrincipal">Baixar arquivo</button>
+        <button id="ciReiniciar" class="botaoSecundario">Reiniciar</button>
+      </div>
+      <p id="ciTamanho" class="tamanhoFinal"></p>
+      <p id="ciDimensao" class="tamanhoFinal"></p>
+    </div>
+
+    <div id="ciErro" class="areaErro oculto"></div>
+  </section>
+
+  <section class="aba oculto" id="aba_juntar">
+    <h1>Juntar Arquivos</h1>
+    <p class="descricao">Envie arquivos em PDF ou foto para unir em um unico PDF.</p>
+
+    <div id="juntarEnvio" class="areaEnvio">
+      <input type="file" id="juntarEntrada" accept="application/pdf,image/*" multiple hidden>
+      <button id="juntarEscolher" class="botaoPrincipal">Escolher arquivos</button>
+      <p class="nomeArquivo">Voce pode selecionar varios arquivos de uma vez.</p>
+    </div>
+
+    <div id="juntarOrganizar" class="juntarOrganizar oculto">
+      <p class="instrucaoOrdem">A ordem dos arquivos pode ser alterada arrastando e soltando</p>
+      <div id="grade" class="grade"></div>
+      <div class="linhaAcoes">
+        <button id="juntarMais" class="botaoSecundario">Adicionar mais</button>
+        <button id="juntarProcessar" class="botaoPrincipal">Juntar arquivos</button>
+      </div>
+    </div>
+
+    <div id="juntarProcessando" class="areaProcessando oculto">
+      <p>Juntando os arquivos</p>
+    </div>
+
+    <div id="juntarResultado" class="areaResultado oculto">
+      <div class="campoNome">
+        <label for="juntarNomeArquivo" class="rotuloNome">Nome do arquivo</label>
+        <div class="entradaNomeLinha">
+          <input type="text" id="juntarNomeArquivo" class="entradaNome" value="Merged doc" spellcheck="false">
+          <span class="sufixoNome">.pdf</span>
+        </div>
+      </div>
+      <div class="linhaResultado">
+        <button id="juntarBaixar" class="botaoPrincipal">Baixar arquivo</button>
+        <button id="juntarVoltar" class="botaoSecundario">Voltar</button>
+        <button id="juntarReiniciar" class="botaoSecundario">Reiniciar</button>
+      </div>
+      <p id="juntarTamanho" class="tamanhoFinal"></p>
+    </div>
+
+    <div id="juntarErro" class="areaErro oculto"></div>
+  </section>
+
+  <section class="aba oculto" id="aba_pdf_para_foto">
+    <h1>Converter PDF para Foto</h1>
+    <p class="descricao">Envie um PDF para gerar cada pagina como uma imagem.</p>
+
+    <div id="pfEnvio" class="areaEnvio">
+      <input type="file" id="pfEntrada" accept="application/pdf" hidden>
+      <button id="pfEscolher" class="botaoPrincipal">Escolher arquivo</button>
+      <p id="pfNome" class="nomeArquivo"></p>
+    </div>
+
+    <div id="pfProcessando" class="areaProcessando oculto">
+      <p>Convertendo o arquivo</p>
+    </div>
+
+    <div id="pfResultado" class="areaResultado oculto">
+      <div class="linhaResultado">
+        <button id="pfBaixar" class="botaoPrincipal">Baixar arquivo</button>
+        <button id="pfReiniciar" class="botaoSecundario">Reiniciar</button>
+      </div>
+      <p id="pfInfo" class="tamanhoFinal"></p>
+    </div>
+
+    <div id="pfErro" class="areaErro oculto"></div>
+  </section>
+
+  <section class="aba oculto" id="aba_foto_para_pdf">
+    <h1>Converter Foto para PDF</h1>
+    <p class="descricao">Envie fotos para gerar um PDF.</p>
+
+    <div class="seletorModo">
+      <button id="modoFotos" class="opcaoModo opcaoAtiva" data-modo="fotos">Juncao de Fotos</button>
+      <button id="modoDocumentos" class="opcaoModo" data-modo="documentos">Juncao de Documentos</button>
+    </div>
+    <p id="fpModoInfo" class="modoInfo">Cada foto ocupa uma pagina.</p>
+
+    <div id="fpEnvio" class="areaEnvio">
+      <input type="file" id="fpEntrada" accept="image/*" multiple hidden>
+      <button id="fpEscolher" class="botaoPrincipal">Escolher fotos</button>
+      <p class="nomeArquivo">Voce pode selecionar varias fotos de uma vez.</p>
+    </div>
+
+    <div id="fpOrganizar" class="juntarOrganizar oculto">
+      <p class="instrucaoOrdem">A ordem das fotos pode ser alterada arrastando e soltando</p>
+      <div id="gradeFotos" class="grade"></div>
+      <div class="linhaAcoes">
+        <button id="fpMais" class="botaoSecundario">Adicionar mais</button>
+        <button id="fpProcessar" class="botaoPrincipal">Gerar PDF</button>
+      </div>
+    </div>
+
+    <div id="fpProcessando" class="areaProcessando oculto">
+      <p>Gerando o PDF</p>
+    </div>
+
+    <div id="fpResultado" class="areaResultado oculto">
+      <div class="campoNome">
+        <label for="fpNomeArquivo" class="rotuloNome">Nome do arquivo</label>
+        <div class="entradaNomeLinha">
+          <input type="text" id="fpNomeArquivo" class="entradaNome" value="Merged img" spellcheck="false">
+          <span class="sufixoNome">.pdf</span>
+        </div>
+      </div>
+      <div class="linhaResultado">
+        <button id="fpBaixar" class="botaoPrincipal">Baixar arquivo</button>
+        <button id="fpReiniciar" class="botaoSecundario">Reiniciar</button>
+      </div>
+      <p id="fpTamanho" class="tamanhoFinal"></p>
+    </div>
+
+    <div id="fpErro" class="areaErro oculto"></div>
+  </section>
+
+  <section class="aba oculto" id="aba_cdc">
+    <h1>Juncao de Arquivos CDC</h1>
+    <p class="descricao">Anexe os documentos do processo. O PDF final segue a ordem abaixo.</p>
+
+    <div id="cdcFormulario">
+      {% for campo in campos_cdc %}
+      <div class="campoCdc" data-campo="{{ campo.id }}"
+           data-obrigatorio="{{ 1 if campo.obrigatorio else 0 }}"
+           data-paginas="{{ campo.paginas if campo.paginas else '' }}"
+           data-aviso-acima="{{ 1 if campo.aviso_acima else 0 }}"
+           data-nome="{{ campo.nome }}">
+        <button type="button" class="cabecalhoCampo">
+          <span class="setaCampo">&#8250;</span>
+          <span class="tituloCampo">{{ campo.nome }}{% if campo.obrigatorio %}<span class="marcaObrigatorio">*</span>{% endif %}</span>
+          <span class="contadorCampo">vazio</span>
+        </button>
+        <div class="corpoCampo oculto">
+          <input type="file" class="entradaCampo" accept="application/pdf,image/*" multiple hidden>
+          <div class="grade gradeCampo"></div>
+          <p class="avisoPaginas oculto"></p>
+          <button type="button" class="botaoSecundario botaoAnexar">Anexar arquivos</button>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="linhaAcoes">
+        <button id="cdcGerar" class="botaoPrincipal">Gerar arquivo</button>
+        <button id="cdcLimpar" class="botaoSecundario">Limpar tudo</button>
+      </div>
+    </div>
+
+    <div id="cdcConfirmacao" class="areaResultado oculto">
+      <p class="textoConfirmacao">Voce esta gerando o arquivo com dados incompletos. Deseja realmente continuar?</p>
+      <p id="cdcFaltantes" class="listaFaltantes"></p>
+      <div class="linhaResultado">
+        <button id="cdcConfirmarSim" class="botaoPrincipal">Sim</button>
+        <button id="cdcConfirmarNao" class="botaoSecundario">Nao</button>
+      </div>
+    </div>
+
+    <div id="cdcProcessando" class="areaProcessando oculto">
+      <p>Gerando o arquivo</p>
+    </div>
+
+    <div id="cdcResultado" class="areaResultado oculto">
+      <div class="campoNome">
+        <label for="cdcNomeArquivo" class="rotuloNome">Nome do arquivo</label>
+        <div class="entradaNomeLinha">
+          <input type="text" id="cdcNomeArquivo" class="entradaNome" value="CDC" spellcheck="false">
+          <span class="sufixoNome">.pdf</span>
+        </div>
+      </div>
+      <div class="linhaResultado">
+        <button id="cdcBaixar" class="botaoPrincipal">Baixar arquivo</button>
+        <button id="cdcVoltar" class="botaoSecundario">Voltar</button>
+        <button id="cdcReiniciar" class="botaoSecundario">Reiniciar</button>
+      </div>
+      <p id="cdcTamanho" class="tamanhoFinal"></p>
+    </div>
+
+    <div id="cdcErro" class="areaErro oculto"></div>
+  </section>
+
+  <section class="aba oculto" id="aba_placas">
+    <h1>Placas</h1>
+    <p class="descricao">Monte a pasta de cada cliente e gere o arquivo do lote.</p>
+
+    <div id="placasFormulario">
+      <div class="seletorModo">
+        <button class="opcaoModo opcaoAtiva" data-tipo="pf">Placa PF</button>
+        <button class="opcaoModo" data-tipo="pj">Placa PJ</button>
+      </div>
+      <div class="seletorModo">
+        <button class="opcaoModo opcaoAtiva" data-processo="vista">Venda a vista</button>
+        <button class="opcaoModo" data-processo="carta">Carta de credito</button>
+      </div>
+
+      <p id="placasClienteLido" class="clienteLido oculto"></p>
+
+      <div id="placasCampos"></div>
+
+      <div class="linhaAcoes">
+        <button id="placasAdicionar" class="botaoPrincipal">Adicionar cliente</button>
+      </div>
+
+      <div id="placasListaArea" class="listaClientesArea oculto">
+        <p class="tituloLista">Clientes neste lote</p>
+        <div id="placasLista" class="listaClientes"></div>
+        <div class="linhaAcoes">
+          <button id="placasGerar" class="botaoPrincipal">Gerar arquivo</button>
+          <button id="placasLimpar" class="botaoSecundario">Limpar lote</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="placasConfirmacao" class="areaResultado oculto">
+      <p id="placasTextoConfirmacao" class="textoConfirmacao"></p>
+      <div class="linhaResultado">
+        <button id="placasConfirmarSim" class="botaoPrincipal">Sim</button>
+        <button id="placasConfirmarNao" class="botaoSecundario">Nao</button>
+      </div>
+    </div>
+
+    <div id="placasProcessando" class="areaProcessando oculto">
+      <p>Gerando o arquivo</p>
+    </div>
+
+    <div id="placasResultado" class="areaResultado oculto">
+      <div class="campoNome">
+        <label for="placasNomeArquivo" class="rotuloNome">Nome do arquivo</label>
+        <div class="entradaNomeLinha">
+          <input type="text" id="placasNomeArquivo" class="entradaNome" spellcheck="false">
+          <span class="sufixoNome">.zip</span>
+        </div>
+      </div>
+      <div class="linhaResultado">
+        <button id="placasBaixar" class="botaoPrincipal">Baixar arquivo</button>
+        <button id="placasVoltar" class="botaoSecundario">Voltar</button>
+        <button id="placasReiniciar" class="botaoSecundario">Reiniciar</button>
+      </div>
+      <p id="placasTamanho" class="tamanhoFinal"></p>
+    </div>
+
+    <div id="placasErro" class="areaErro oculto"></div>
+
+    <template id="modeloCampoPlaca">
+      <div class="campoCdc campoPlaca">
+        <button type="button" class="cabecalhoCampo">
+          <span class="setaCampo">&#8250;</span>
+          <span class="tituloCampo"></span>
+          <span class="contadorCampo">vazio</span>
+        </button>
+        <div class="corpoCampo oculto">
+          <input type="file" class="entradaCampo" accept="application/pdf,image/*" multiple hidden>
+          <div class="grade gradeCampo"></div>
+          <button type="button" class="botaoSecundario botaoAnexar">Anexar arquivos</button>
+        </div>
+      </div>
+    </template>
+  </section>
+
+  <section class="aba oculto" id="aba_indisponivel">
+    <h1>Em construcao</h1>
+    <p class="descricao">Esta funcionalidade ainda nao esta disponivel.</p>
+  </section>
+
+</main>
+
+<div id="visualizador" class="visualizador oculto">
+  <div class="visualizadorBarra">
+    <button id="vizAnterior" class="vizBotao" aria-label="Pagina anterior">&#8249;</button>
+    <span id="vizPagina" class="vizPagina">1 / 1</span>
+    <button id="vizProxima" class="vizBotao" aria-label="Proxima pagina">&#8250;</button>
+    <button id="vizMenos" class="vizBotao" aria-label="Diminuir zoom">&#8722;</button>
+    <button id="vizMais" class="vizBotao" aria-label="Aumentar zoom">&#43;</button>
+    <button id="vizGirar" class="vizBotao" aria-label="Girar">&#8635;</button>
+    <button id="vizFechar" class="vizBotao" aria-label="Fechar">&#215;</button>
+  </div>
+  <div id="vizConteudo" class="vizConteudo"></div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/juntar.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fotopdf.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/cdc.js') }}"></script>
+<script id="dadosCamposPlacas" type="application/json">{{ campos_placas | tojson }}</script>
+<script type="module" src="{{ url_for('static', filename='js/placas.js') }}"></script>
+</body>
+</html>
