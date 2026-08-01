@@ -604,12 +604,26 @@ h1 {
   padding-top: 24px;
 }
 
+.cabecalhoLista {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
 .tituloLista {
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--textoFraco);
-  margin: 0 0 14px 0;
+  margin: 0;
+}
+
+.botaoBaixarLista {
+  padding: 6px 14px;
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
 .listaClientes {
@@ -633,10 +647,18 @@ h1 {
   word-break: break-word;
 }
 
+.botoesCliente {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.botaoBaixarCliente,
 .botaoRemoverCliente {
   padding: 6px 14px;
   font-size: 13px;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .campoPlaca {
