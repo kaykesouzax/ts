@@ -71,10 +71,6 @@ document.querySelectorAll("#aba_comprimir .opcaoModo").forEach((botao) => {
 });
 
 botaoEscolher.addEventListener("click", () => entradaArquivo.click());
-areaEnvio.addEventListener("click", (e) => {
-  if (e.target.closest("button")) return;
-  entradaArquivo.click();
-});
 
 entradaArquivo.addEventListener("change", () => {
   const arquivo = entradaArquivo.files[0];
@@ -162,10 +158,6 @@ let pfJob = null;
 
 if (pfEscolher) {
   pfEscolher.addEventListener("click", () => pfEntrada.click());
-  pfEnvio.addEventListener("click", (e) => {
-    if (e.target.closest("button")) return;
-    pfEntrada.click();
-  });
 
   pfEntrada.addEventListener("change", () => {
     const arquivo = pfEntrada.files[0];
