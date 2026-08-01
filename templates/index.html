@@ -313,7 +313,10 @@
       </div>
 
       <div id="placasListaArea" class="listaClientesArea oculto">
-        <p class="tituloLista">Clientes neste lote</p>
+        <div class="cabecalhoLista">
+          <p class="tituloLista">Clientes neste lote</p>
+          <button id="placasBaixarLista" class="botaoSecundario botaoBaixarLista">Baixar lista</button>
+        </div>
         <div id="placasLista" class="listaClientes"></div>
         <div class="linhaAcoes">
           <button id="placasGerar" class="botaoPrincipal">Gerar arquivo</button>
@@ -393,6 +396,7 @@
 <script type="module" src="{{ url_for('static', filename='js/fotopdf.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/cdc.js') }}"></script>
 <script id="dadosCamposPlacas" type="application/json">{{ campos_placas | tojson }}</script>
+<script src="{{ url_for('static', filename='vendor/jszip.min.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/placas.js') }}"></script>
 </body>
 </html>
