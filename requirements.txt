@@ -3,4 +3,3 @@ PyMuPDF
 pikepdf
 Pillow
 img2pdf
-gunicorn

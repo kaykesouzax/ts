@@ -22,7 +22,7 @@ JOBS_DIR = os.path.join(BASE_DIR, "tmp_jobs")
 os.makedirs(JOBS_DIR, exist_ok=True)
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 60 * 1024 * 1024  # 60mb por upload
+app.config["MAX_CONTENT_LENGTH"] = 300 * 1024 * 1024  # 300mb: lote de placas com fotos de celular
 
 MENU = [
     {
@@ -115,6 +115,15 @@ def formatar_tamanho(num_bytes):
         return f"{kb:.1f} KB"
     mb = kb / 1024
     return f"{mb:.2f} MB"
+
+
+@app.errorhandler(413)
+def arquivo_muito_grande(erro):
+    limite_mb = app.config["MAX_CONTENT_LENGTH"] // (1024 * 1024)
+    return jsonify({
+        "erro": f"Os arquivos enviados passam do limite de {limite_mb} MB. "
+                f"Gere o lote em duas partes ou comprima as imagens antes."
+    }), 413
 
 
 @app.route("/")
@@ -546,8 +555,9 @@ def placas_enviar():
 
             clientes.append({"nome": info.get("nome", ""), "documentos": documentos})
 
+        individual = request.form.get("individual") == "1"
         caminho_zip = os.path.join(pasta, "placas.zip")
-        pastas = placas_mod.montar_zip(clientes, pasta, caminho_zip)
+        pastas = placas_mod.montar_zip(clientes, pasta, caminho_zip, compactar=not individual)
     except ValueError as erro:
         shutil.rmtree(pasta, ignore_errors=True)
         return jsonify({"erro": str(erro)}), 400

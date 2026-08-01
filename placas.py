@@ -47,10 +47,14 @@ def montar_documento(campo_id, caminhos, caminho_saida):
     return True
 
 
-def montar_zip(clientes, pasta_trabalho, caminho_zip):
+def montar_zip(clientes, pasta_trabalho, caminho_zip, compactar=True):
     """
     clientes: lista de dicionarios
       { "nome": str, "documentos": [ {"id":..., "rotulo":..., "caminhos":[...]} ] }
+
+    compactar: quando False, o zip usa armazenamento sem compressao
+      (usado no download individual, que e um atalho e nao precisa
+      economizar espaco).
 
     Retorna a lista de pastas criadas, na ordem.
     """
@@ -86,7 +90,8 @@ def montar_zip(clientes, pasta_trabalho, caminho_zip):
 
         pastas.append(nome)
 
-    with zipfile.ZipFile(caminho_zip, "w", zipfile.ZIP_DEFLATED) as z:
+    metodo = zipfile.ZIP_DEFLATED if compactar else zipfile.ZIP_STORED
+    with zipfile.ZipFile(caminho_zip, "w", metodo) as z:
         for pasta_atual, _, arquivos in os.walk(raiz):
             for arquivo in arquivos:
                 completo = os.path.join(pasta_atual, arquivo)
