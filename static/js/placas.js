@@ -408,7 +408,17 @@ function renderizarLista() {
    memoria do navegador, sem chamar o servidor. Cada arquivo sai
    separado (sem zip), dentro de uma subpasta com o nome do cliente
    dentro da pasta de downloads (funciona no Chrome). Serve como
-   alternativa quando o Gerar arquivo falhar por causa do lote inteiro. */
+   alternativa quando o Gerar arquivo falhar por causa do lote inteiro.
+
+   Os downloads sao disparados todos de uma vez, de forma sincrona,
+   dentro do mesmo clique do usuario. O Chrome bloqueia downloads
+   multiplos quando eles nao parecem vir direto de uma acao do usuario
+   (por exemplo, quando ha um atraso entre eles via setTimeout). Na
+   primeira vez, o Chrome mostra um aviso de "downloads bloqueados"
+   perto da barra de enderecos; e so clicar em permitir uma vez que
+   os proximos lotes baixam todos os arquivos sem pedir de novo. */
+let avisoDownloadMostrado = false;
+
 function baixarPastaCliente(cliente, botao) {
   const arquivos = cliente.arquivosProcessados || [];
   if (arquivos.length === 0) {
@@ -416,25 +426,26 @@ function baixarPastaCliente(cliente, botao) {
     return;
   }
   limparErro();
-  const textoOriginal = botao.textContent;
-  botao.disabled = true;
 
-  arquivos.forEach((arquivo, posicao) => {
-    setTimeout(() => {
-      const url = URL.createObjectURL(arquivo.blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = cliente.pastaNome + "/" + arquivo.nome;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
-      if (posicao === arquivos.length - 1) {
-        botao.disabled = false;
-        botao.textContent = textoOriginal;
-      }
-    }, posicao * 300);
-  });
+  for (const arquivo of arquivos) {
+    const url = URL.createObjectURL(arquivo.blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = cliente.pastaNome + "/" + arquivo.nome;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  if (arquivos.length > 1 && !avisoDownloadMostrado) {
+    avisoDownloadMostrado = true;
+    mostrarErro(
+      "Se so um arquivo baixou, o Chrome bloqueou os demais na primeira vez. Procure o icone de " +
+      "downloads bloqueados perto da barra de enderecos, clique em permitir e " +
+      "tente Baixar pasta de novo."
+    );
+  }
 }
 
 /* Copia texto para a area de transferencia. A Clipboard API so funciona
